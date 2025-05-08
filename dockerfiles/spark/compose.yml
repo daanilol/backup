@@ -1,0 +1,51 @@
+services:
+  spark-master:
+    build: .
+    mem_limit: 1000m
+    cpus: "1.5"
+    container_name: spark-master
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - "8080:8080"   # UI do Spark Master
+      - "7077:7077"   # Porta de comunicação do Master com os Workers
+      - "4040:4040"   # UI do Spark History
+    networks:
+      - spark-net
+    volumes:
+      - ./spark-logs:/opt/spark/spark-events
+
+  spark-worker:
+    build: .
+    mem_limit: 1000m
+    cpus: "1.5"
+    environment:
+      - SPARK_MODE=worker
+    ports:
+      - "8081:8081"   # UI do Spark Worker
+      - "4041:4040"   # UI do Spark History
+    networks:
+      - spark-net
+    volumes:
+      - ./spark-logs:/opt/spark/spark-events
+    depends_on:
+      - spark-master
+
+  spark-history:
+    build: .
+    mem_limit: 1000m
+    cpus: "1.5"
+    environment:
+      - SPARK_MODE=history
+    ports:
+      - "18080:18080" #UI do Spark History
+    networks:
+      - spark-net
+    volumes:
+      - ./spark-logs:/opt/spark/spark-events
+    depends_on:
+      - spark-master
+
+networks:
+  spark-net:
+    driver: bridge

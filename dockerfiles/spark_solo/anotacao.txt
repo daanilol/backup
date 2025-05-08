@@ -1,0 +1,20 @@
+"""
+FROM ubuntu:22.04
+
+RUN apt update -y && apt upgrade -y && \
+    apt install curl \
+    openjdk-11-jdk -y \
+    wget
+
+#Definindo variáveis de ambiente
+ARG SPARK_VERSION=3.5.5
+ARG HADOOP_VERSION=3
+ARG SCALA_VERSION=2.12
+ARG SPARK_HOME=/opt/spark
+ARG PATH="$SPARK_HOME/bin:$SPARK_HOME/sbin:$PATH"
+
+RUN wget https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz && \
+    tar -xvf spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz && \
+    mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} ${SPARK_HOME} && \
+    rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
+"""
